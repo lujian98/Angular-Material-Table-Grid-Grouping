@@ -22,7 +22,7 @@ export class AppComponent {
   title = 'Grid Grouping';
 
   displayedColumns: string[] = ['surname', 'forename', 'gender', 'ukCity', 'salary', 'department'];
-  public dataSource = new MatTableDataSource<People | Group>([]);
+  public dataSource = new MatTableDataSource<any | Group>([]);
 
   // groupByColumns: string[] = ['department', 'salary'];
   groupByColumns: string[] = ['department'];
@@ -46,11 +46,11 @@ export class AppComponent {
     this.dataSource.filterPredicate = this.customFilterPredicate.bind(this);
   }
 
-  customFilterPredicate(data: People | Group, filter: string): boolean {
+  customFilterPredicate(data: any | Group, filter: string): boolean {
     return (data instanceof Group) ? data.visible : this.getDataRowVisible(data);
   }
 
-  getDataRowVisible(data: People): boolean {
+  getDataRowVisible(data: any): boolean {
     const groupRows = this.dataSource.data.filter(
       row => {
         if (!(row instanceof Group)) {
