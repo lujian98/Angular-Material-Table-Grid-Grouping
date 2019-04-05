@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
 
   public dataSource = new MatTableDataSource<any | Group>([]);
 
+  _alldata: any[];
   columns: any[];
   displayedColumns: string[];
   groupByColumns: string[] = ['brand'];
@@ -50,13 +51,26 @@ export class AppComponent implements OnInit {
     .subscribe(
       (data: any) => {
           data.data.forEach((item, index) => {
-            item.id = index;
+            item.id = index + 1;
           });
-          this.dataSource.data = this.addGroups(data.data, this.groupByColumns);
+          this._alldata = data.data;
+          this.dataSource.data = this._alldata;
           this.dataSource.filterPredicate = this.customFilterPredicate.bind(this);
         },
       (err: any) => console.log(err)
     );
+  }
+
+  groupBy(event, column) {
+    event.stopPropagation();
+    this.groupByColumns = [column.field];
+    this.dataSource.data = this.addGroups(this._alldata, this.groupByColumns);
+  }
+
+  unGroupBy(event, column) {
+    event.stopPropagation();
+    this.groupByColumns = [];
+    this.dataSource.data = this._alldata;
   }
 
   // below is for grid row grouping

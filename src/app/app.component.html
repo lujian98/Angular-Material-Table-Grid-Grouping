@@ -1,7 +1,19 @@
 <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
   <ng-container *ngFor="let column of columns; let i = index" matColumnDef="{{ column.field }}">
-    <mat-header-cell *matHeaderCellDef>{{ column.field }}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ column.field }}
+
+      <button class="grid-view-header-menu"
+        mat-icon-button [matMenuTriggerFor]="menu" >
+        <mat-icon >menu</mat-icon>
+      </button>
+
+      <mat-menu #menu>
+        <button mat-menu-item (click)="groupBy($event, column);">Group By This Field</button>
+        <button mat-menu-item (click)="unGroupBy($event, column);" >Ungroup</button>
+      </mat-menu>
+
+    </mat-header-cell>
     <mat-cell *matCellDef="let row">{{ row[column.field] }}</mat-cell>
   </ng-container>
 
