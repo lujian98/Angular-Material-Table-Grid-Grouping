@@ -1,35 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, } from '@angular/core';
 import { MatTableDataSource } from '@angular/material';
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 2, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 5, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-  {position: 11, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
-  {position: 12, name: 'Helium', weight: 4.0026, symbol: 'He'},
-  {position: 13, name: 'Lithium', weight: 6.941, symbol: 'Li'},
-  {position: 14, name: 'Beryllium', weight: 9.0122, symbol: 'Be'},
-  {position: 15, name: 'Boron', weight: 10.811, symbol: 'B'},
-  {position: 16, name: 'Carbon', weight: 12.0107, symbol: 'C'},
-  {position: 17, name: 'Nitrogen', weight: 14.0067, symbol: 'N'},
-  {position: 18, name: 'Oxygen', weight: 15.9994, symbol: 'O'},
-  {position: 19, name: 'Fluorine', weight: 18.9984, symbol: 'F'},
-  {position: 20, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
-];
+import { CarTableDataService } from './car-table-data.service';
 
 export class Group {
   level = 0;
@@ -46,29 +18,48 @@ export class Group {
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Grid Grouping';
-
-  displayedColumns: string[] = ['position', 'name', 'weight', 'symbol'];
 
   public dataSource = new MatTableDataSource<any | Group>([]);
 
-  // groupByColumns: string[] = ['department', 'salary'];
-  groupByColumns: string[] = ['symbol'];
   columns: any[];
-  constructor() {
-    this.columns = [
-      { field: 'position', width: 100,  },
-      { field: 'name', width: 350, },
-      { field: 'weight', width: 250, },
-      { field: 'symbol', width: 100, }
-    ];
-    const data = ELEMENT_DATA;
-    this.dataSource.data = this.addGroups(data, this.groupByColumns);
-    this.dataSource.filterPredicate = this.customFilterPredicate.bind(this);
+  displayedColumns: string[];
+  groupByColumns: string[] = ['brand'];
+
+  constructor(
+    protected dataSourceService: CarTableDataService,
+  ) {
+
+    this.columns = [{
+      field: 'id'
+    }, {
+      field: 'vin'
+    }, {
+      field: 'brand'
+    }, {
+      field: 'year'
+    }, {
+      field: 'color'
+    }];
+    this.displayedColumns = this.columns.map(column => column.field);
   }
 
+  ngOnInit() {
+    this.dataSourceService.getAllData()
+    .subscribe(
+      (data: any) => {
+          data.data.forEach((item, index) => {
+            item.id = index;
+          });
+          this.dataSource.data = this.addGroups(data.data, this.groupByColumns);
+          this.dataSource.filterPredicate = this.customFilterPredicate.bind(this);
+        },
+      (err: any) => console.log(err)
+    );
+  }
 
+  // below is for grid row grouping
   customFilterPredicate(data: any | Group, filter: string): boolean {
     return (data instanceof Group) ? data.visible : this.getDataRowVisible(data);
   }
@@ -92,17 +83,13 @@ export class AppComponent {
     if (groupRows.length === 0) {
       return true;
     }
-    // if (groupRows.length > 1) {
-    //   throw "Data row is in more than one group!";
-    // }
-
     const parent = groupRows[0] as Group;
     return parent.visible && parent.expanded;
   }
 
   groupHeaderClick(row) {
     row.expanded = !row.expanded;
-    this.dataSource.filter = performance.now().toString();  // hack to trigger filter refresh
+    this.dataSource.filter = performance.now().toString();  // bug here need to fix
   }
 
   addGroups(data: any[], groupByColumns: string[]): any[] {
@@ -111,7 +98,6 @@ export class AppComponent {
   }
 
   getSublevel(data: any[], level: number, groupByColumns: string[], parent: Group): any[] {
-    // Recursive function, stop when there are no more levels.
     if (level >= groupByColumns.length) {
       return data;
     }

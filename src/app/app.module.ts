@@ -45,8 +45,8 @@ import {
 
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-//import {TableBasicExample} from './app/table-basic-example';
 
+import { CarTableDataService } from './car-table-data.service';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -102,70 +102,8 @@ import { AppComponent } from './app.component';
     MatTooltipModule,
     MatTreeModule,
   ],
-  providers: [],
+  providers: [CarTableDataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
 
-/*
-
-@NgModule({
-  exports: [
-    CdkTableModule,
-    CdkTreeModule,
-    MatAutocompleteModule,
-    MatBadgeModule,
-    MatBottomSheetModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatChipsModule,
-    MatStepperModule,
-    MatDatepickerModule,
-    MatDialogModule,
-    MatDividerModule,
-    MatExpansionModule,
-    MatGridListModule,
-    MatIconModule,
-    MatInputModule,
-    MatListModule,
-    MatMenuModule,
-    MatNativeDateModule,
-    MatPaginatorModule,
-    MatProgressBarModule,
-    MatProgressSpinnerModule,
-    MatRadioModule,
-    MatRippleModule,
-    MatSelectModule,
-    MatSidenavModule,
-    MatSliderModule,
-    MatSlideToggleModule,
-    MatSnackBarModule,
-    MatSortModule,
-    MatTableModule,
-    MatTabsModule,
-    MatToolbarModule,
-    MatTooltipModule,
-    MatTreeModule,
-  ]
-})
-export class DemoMaterialModule {}
-
-@NgModule({
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    HttpClientModule,
-    DemoMaterialModule,
-    MatNativeDateModule,
-    ReactiveFormsModule,
-  ],
-  entryComponents: [TableBasicExample],
-  declarations: [TableBasicExample],
-  bootstrap: [TableBasicExample],
-  providers: []
-})
-export class AppModule {}
-*/
