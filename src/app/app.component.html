@@ -13,7 +13,7 @@
 		<mat-cell colspan="999" *matCellDef="let group">
       <mat-icon *ngIf="group.expanded">expand_less</mat-icon>
       <mat-icon *ngIf="!group.expanded">expand_more</mat-icon>
-			<strong>{{groupByColumns[group.level-1]}} = {{group[groupByColumns[group.level-1]]}}</strong>
+			<strong>{{groupByColumns[group.level-1]}} = {{group[groupByColumns[group.level-1]]}} ({{group.totalCounts}})</strong>
       </mat-cell>
   </ng-container>
 
