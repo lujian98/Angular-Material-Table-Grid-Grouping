@@ -6,7 +6,7 @@ import { CarTableDataService } from './car-table-data.service';
 export class Group {
   level = 0;
   parent: Group;
-  expanded = true;
+  expanded = false;
   totalCounts = 0;
   get visible(): boolean {
     return !this.parent || (this.parent.visible && this.parent.expanded);
@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
   _alldata: any[];
   columns: any[];
   displayedColumns: string[];
-  groupByColumns: string[] = ['brand'];
+  groupByColumns: string[] = [];
 
   constructor(
     protected dataSourceService: CarTableDataService,
@@ -65,6 +65,7 @@ export class AppComponent implements OnInit {
     event.stopPropagation();
     this.groupByColumns = [column.field];
     this.dataSource.data = this.addGroups(this._alldata, this.groupByColumns);
+    this.dataSource.filter = performance.now().toString();  // bug here need to fix
   }
 
   unGroupBy(event, column) {
@@ -108,6 +109,7 @@ export class AppComponent implements OnInit {
 
   addGroups(data: any[], groupByColumns: string[]): any[] {
     const rootGroup = new Group();
+    rootGroup.expanded = true;
     return this.getSublevel(data, 0, groupByColumns, rootGroup);
   }
 
