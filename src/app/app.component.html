@@ -1,0 +1,22 @@
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <ng-container *ngFor="let column of columns; let i = index" matColumnDef="{{ column.field }}">
+    <mat-header-cell *matHeaderCellDef>{{ column.field }}</mat-header-cell>
+    <mat-cell *matCellDef="let row">{{ row[column.field] }}</mat-cell>
+  </ng-container>
+
+	<mat-header-row mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+	<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+	<!-- Group header -->
+	<ng-container matColumnDef="groupHeader">
+		<mat-cell colspan="999" *matCellDef="let group">
+      <mat-icon *ngIf="group.expanded">expand_less</mat-icon>
+      <mat-icon *ngIf="!group.expanded">expand_more</mat-icon>
+			<strong>{{groupByColumns[group.level-1]}} = {{group[groupByColumns[group.level-1]]}}</strong>
+      </mat-cell>
+  </ng-container>
+
+  <mat-row *matRowDef="let row; columns: ['groupHeader']; when: isGroup" (click)="groupHeaderClick(row)"> </mat-row>
+
+</mat-table>
