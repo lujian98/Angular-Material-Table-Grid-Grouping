@@ -44,6 +44,7 @@ export class AppComponent implements OnInit {
       field: 'color'
     }];
     this.displayedColumns = this.columns.map(column => column.field);
+    this.groupByColumns = ['brand'];
   }
 
   ngOnInit() {
@@ -54,8 +55,9 @@ export class AppComponent implements OnInit {
             item.id = index + 1;
           });
           this._alldata = data.data;
-          this.dataSource.data = this._alldata;
+          this.dataSource.data = this.addGroups(this._alldata, this.groupByColumns);
           this.dataSource.filterPredicate = this.customFilterPredicate.bind(this);
+          this.dataSource.filter = performance.now().toString();
         },
       (err: any) => console.log(err)
     );
@@ -65,7 +67,7 @@ export class AppComponent implements OnInit {
     event.stopPropagation();
     this.groupByColumns = [column.field];
     this.dataSource.data = this.addGroups(this._alldata, this.groupByColumns);
-    this.dataSource.filter = performance.now().toString();  // bug here need to fix
+    this.dataSource.filter = performance.now().toString();
   }
 
   unGroupBy(event, column) {
