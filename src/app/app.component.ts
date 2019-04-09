@@ -6,7 +6,7 @@ import { CarTableDataService } from './car-table-data.service';
 export class Group {
   level = 0;
   parent: Group;
-  expanded = false;
+  expanded = true;
   totalCounts = 0;
   get visible(): boolean {
     return !this.parent || (this.parent.visible && this.parent.expanded);
@@ -65,15 +65,34 @@ export class AppComponent implements OnInit {
 
   groupBy(event, column) {
     event.stopPropagation();
-    this.groupByColumns = [column.field];
+    this.checkGroupByColumn(column.field, true);
     this.dataSource.data = this.addGroups(this._alldata, this.groupByColumns);
     this.dataSource.filter = performance.now().toString();
   }
 
+  checkGroupByColumn(field, add ) {
+    let found = null;
+    for (const column of this.groupByColumns) {
+      if (column === field) {
+        found = this.groupByColumns.indexOf(column, 0);
+      }
+    }
+    if (found != null && found >= 0) {
+      if (!add) {
+        this.groupByColumns.splice(found, 1);
+      }
+    } else {
+      if ( add ) {
+        this.groupByColumns.push(field);
+      }
+    }
+  }
+
   unGroupBy(event, column) {
     event.stopPropagation();
-    this.groupByColumns = [];
-    this.dataSource.data = this._alldata;
+    this.checkGroupByColumn(column.field, false);
+    this.dataSource.data = this.addGroups(this._alldata, this.groupByColumns);
+    this.dataSource.filter = performance.now().toString();
   }
 
   // below is for grid row grouping
